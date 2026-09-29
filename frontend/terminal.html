@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>server01 — SSH</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css">
+<link rel="stylesheet" href="/css/terminal.css?v=36">
+</head>
+<body>
+<div class="boot" id="boot"><div class="boot-logo"><img src="/assets/deceptr-os.png" alt="Deceptr OS"></div><div class="boot-title">DeceptrOS</div><div class="boot-sub">Deceive. Observe. Understand.</div></div>
+<div class="os">
+  <!-- left icon rail -->
+  <!-- desktop widgets -->
+  <aside class="taskbar">
+    <div class="tlogo"><img src="/assets/deceptr-logo.png" alt="Deceptr"></div>
+    <div class="tsep"></div>
+    <div class="tcontainer"><div class="ticons">
+      <button class="ticon" title="Refresh"><svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.3-5.6M20 3v4h-4"/></svg></button>
+      <button class="ticon" title="Files"><svg viewBox="0 0 24 24"><path d="M3 6h6l2 2h10v10H3z"/></svg></button>
+      <button class="ticon" title="Monitor"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="11"/><path d="M9 20h6M12 16v4"/></svg></button>
+      <button class="ticon" title="Audio"><svg viewBox="0 0 24 24"><path d="M5 16v-2a7 7 0 0 1 14 0v2"/><rect x="4" y="15" width="4" height="6" rx="2"/><rect x="16" y="15" width="4" height="6" rx="2"/></svg></button>
+      <button class="ticon" title="WiFi"><svg viewBox="0 0 24 24"><path d="M4 10a12 12 0 0 1 16 0M7.5 13.5a7 7 0 0 1 9 0M11 17a2.5 2.5 0 0 1 2 0"/><circle cx="12" cy="19" r="1.3"/></svg></button>
+      <button class="ticon" title="Console"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14"/><path d="M7 10l3 3-3 3M12 15h5"/></svg></button>
+    </div></div>
+    <div class="tbottom">
+      <div class="bcontainer">
+      <button class="ticon t-blue" title="Battery"><svg viewBox="0 0 24 24"><rect x="8" y="7" width="8" height="13" rx="2"/><path d="M11 4h2"/><rect x="10" y="10" width="4" height="7" fill="currentColor" stroke="none"/></svg></button>
+      <button class="ticon t-purple" title="Diamond"><svg viewBox="0 0 24 24"><path d="M12 3l7 9-7 9-7-9z"/></svg></button>
+      <button class="ticon t-amber" title="Settings"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1"/></svg></button>
+      <button class="ticon t-teal" title="Volume"><svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16 9c1.5 1.5 1.5 4.5 0 6M18.5 7c2.5 2.5 2.5 7.5 0 10"/></svg></button>
+      </div>
+      <div class="tb-clockbox"><div class="tb-time">18<br>28</div></div>
+      <button class="ticon t-red" id="tb-power" title="Power"><i class="fa-solid fa-power-off"></i></button>
+    </div>
+  </aside>
+  <div class="stage-viewport"><div class="stage" id="stage"><div class="deskrow"><main class="desk">
+    <section class="w w-profile">
+      <img class="avatar" src="/assets/profile.jpg" alt="Atharva">
+      <div class="pname">Atharva</div>
+      <div class="psub">@__itzz_atharva_</div>
+      <p class="pbio">I’m Atharva, a second-year engineering student and passionate tech enthusiast interested in AI, cybersecurity, software development, and innovative projects. I love building practical ideas, experimenting with new technologies, and participating in hackathons and technical competitions. I’m especially interested in creating products that combine AI with clean, modern design and solving real-world problems through technology.</p>
+    </section>
+    <section class="w tcell t2"><img class="tile-img" src="/assets/pie-chart.png" alt="pie chart"></section>
+    <section class="w tcell t3"><img class="tile-img" src="/assets/sound.png" alt="sound"></section>
+    <section class="w tcell t4"><img class="tile-img" src="/assets/battery.png" alt="battery"></section>
+    <section class="w tcell t5"><img class="tile-img" src="/assets/bulb.png" alt="bulb"></section>
+    <section class="w w-music">
+      <div class="album"><img src="/assets/song-cover.jpg" alt="song cover"></div>
+      <div class="mtitle">Offline</div>
+      <div class="msub">Nothing Playing</div>
+      <div class="mctl">
+        <button class="mbtn" title="Previous"><svg viewBox="0 0 24 24"><path d="M6 5v14M19 5l-10 7 10 7z"/></svg></button>
+        <button class="mbtn" id="m-play" title="Play"><svg viewBox="0 0 24 24" id="m-play-ico"><path d="M8 5l11 7-11 7z"/></svg></button>
+        <button class="mbtn" title="Next"><svg viewBox="0 0 24 24"><path d="M18 5v14M5 5l10 7-10 7z"/></svg></button>
+      </div>
+      <div class="mbar"><i></i></div>
+    </section>
+    <section class="w w-clock">
+      <div class="ck-time" id="os-clock">18:28</div>
+      <div class="ck-date" id="os-date">02/17/22</div>
+    </section>
+    <section class="w w-quote">
+      <p>"It is through science<br>that we prove, but<br>through intuition<br>that we discover."</p>
+      <p class="qby">~ Henri Poincaré ~</p>
+    </section>
+    <section class="w w-weather">
+      <div class="wx-left"><div class="wx-box">
+        <div class="wx-day">Thursday</div>
+        <svg class="wx-ico" viewBox="0 0 48 48"><path d="M14 30a8 8 0 1 1 2-15.8A11 11 0 0 1 37 16a7 7 0 0 1-1 13.9z"/><path d="M17 34l-2 6M25 34l-2 6M33 34l-2 6"/></svg>
+        <div class="wx-cond">Moderate Rain</div>
+        <div class="wx-temp">22°C in Bandung, ID</div>
+      </div></div>
+      <div class="wx-right">
+        <div class="wx-next">Next: <b>Sleep</b> in <b>01h 32min</b></div>
+        <div class="wx-row"><span class="wx-ic">◉</span> 0 high priority, 1 total</div>
+        <div class="wx-row"><span class="wx-ic">◷</span> 2h 17m uptime</div>
+        <div class="wx-row"><span class="wx-ic">▤</span> 978kb / 3370kb used</div>
+        <div class="wx-row"><span class="wx-ic">▦</span> 11G / 176G free</div>
+        <div class="wx-btns">
+          <button class="ric sm" title="Power"><svg viewBox="0 0 24 24"><path d="M12 3v8"/><path d="M6 6c-3 3-3 9 0 12 2 2 4 2 6 2s4 0 6-2c3-3 3-9 0-12"/></svg></button>
+          <button class="ric sm" title="Refresh"><svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.3-5.6M20 3v4h-4"/></svg></button>
+          <button class="ric sm" title="Lock"><svg viewBox="0 0 24 24"><rect x="6" y="11" width="12" height="9"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></button>
+          <button class="ric sm" title="Expand"><svg viewBox="0 0 24 24"><path d="M9 4H4v5M15 4h5v5M9 20H4v-5M15 20h5v-5"/></svg></button>
+          <button class="ric sm" title="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+        </div>
+      </div>
+    </section>
+  </main>    <aside class="w-dock">
+      <button class="dock" title="Firefox"><i class="fa-brands fa-firefox-browser"></i></button>
+      <button class="dock" id="dock-term" title="Terminal"><i class="fa-solid fa-terminal"></i></button>
+      <button class="dock" title="Telegram"><i class="fa-brands fa-telegram"></i></button>
+      <button class="dock" title="VS Code"><i class="fa-brands fa-visual-studio"></i></button>
+      <button class="dock" title="Discord"><i class="fa-brands fa-discord"></i></button>
+      <button class="dock" title="GitHub"><i class="fa-brands fa-github"></i></button>
+      <button class="dock" title="Spotify"><i class="fa-brands fa-spotify"></i></button>
+    </aside>
+  </div></div></div>
+
+  <!-- floating terminal window -->
+  <div class="topen" id="topen" hidden>
+    <img class="handl" id="handL" src="/assets/hand-1.png" alt="">
+    <img class="handr" id="handR" src="/assets/hand-2.png" alt="">
+    <img class="tshot" id="tshot" src="/assets/terminal.png" alt="" hidden>
+  </div>
+  <section class="twin" id="twin">
+    <div class="tbar" id="tbar">
+      <span class="lights"><i class="lt-r" id="t-close"></i><i class="lt-y" id="t-min"></i><i class="lt-g" id="t-max"></i></span>
+      <span class="ttitle">sentinel@server01 — bash</span>
+      <span class="ttools"><span class="pill" id="conn">Connecting…</span>
+        <button class="btn" id="btn-new">New</button>
+        <button class="btn danger" id="btn-reset">Reset</button></span>
+    </div>
+    <div class="tbanner"><img src="/assets/terminal-ascii.png" alt="terminal"></div>
+    <div class="tsys">
+      <div class="spec">
+        <div class="spec-head">ADMIN@ATHARVA-DESKTOP</div>
+        <div class="spec-row"><i style="color:#56C2D6">■</i> Windows 11 Pro (25H2) x86_64</div>
+        <div class="spec-row"><i style="color:#E08A9B">■</i> AMD Ryzen 5 5600GT (12) @ 4.65 GHz</div>
+        <div class="spec-row"><i style="color:#E8B93E">■</i> A520M-A PRO (MS-7C02, BIOS 1.0)</div>
+        <div class="spec-row"><i style="color:#A6E22E">■</i> 10.06 GiB / 15.40 GiB (65%)</div>
+        <div class="spec-row"><i style="color:#4ADE80">■</i> 356.57 GiB / 475.91 GiB (75%) - NTFS</div>
+        <div class="spec-dots"><span style="color:#5a5a78">●</span><span style="color:#E06C75">●</span><span style="color:#A6E22E">●</span><span style="color:#E8B93E">●</span><span style="color:#6EA8FE">●</span><span style="color:#C678DD">●</span><span style="color:#56C2D6">●</span><span style="color:#E6EAF2">●</span></div>
+        <div class="spec-row"><i style="color:#C9B8F7">■</i> SESSION&nbsp;&nbsp;<b id="tw-sid" style="color:#C9B8F7">—</b></div>
+      </div>
+    </div>
+    <div class="term-body" id="term-body"></div>
+    <div class="tinputrow"><span>$</span><input id="term-input" class="term-input" autocomplete="off" spellcheck="false" placeholder="type a command, e.g. ls /srv/meridian"></div>
+  </section>
+
+  <div class="appwin" id="fm-win" hidden>
+    <div class="atbar" data-drag><span><i class="fa-solid fa-folder"></i>&nbsp; Files</span><button data-close>×</button></div>
+    <div class="fm-bar"><button id="fm-up" title="Up">↑</button><code id="fm-path">/</code></div>
+    <div class="fm-grid" id="fm-grid"></div>
+    <div class="fm-status" id="fm-status"></div>
+  </div>
+  <div class="appwin" id="file-win" hidden>
+    <div class="atbar" data-drag><span id="file-title">File</span><button data-close>×</button></div>
+    <pre class="file-view" id="file-content"></pre>
+  </div>
+  <div class="appwin" id="set-win" hidden>
+    <div class="atbar" data-drag><span><i class="fa-solid fa-gear"></i>&nbsp; System configuration</span><button data-close>×</button></div>
+    <div class="set-body">
+      <label>Brightness<input type="range" id="set-bright" min="20" max="100" value="100"></label>
+      <label>Volume<input type="range" id="set-vol" min="0" max="100" value="70"> <span id="set-vol-v">70%</span></label>
+      <div class="about"><b>AestheticArch OS</b><div class="bmeta">server01 · x86_64 · Baloo shell 1.0</div></div>
+    </div>
+  </div>
+  <div class="appwin" id="audio-win" hidden>
+    <div class="atbar" data-drag><span><i class="fa-solid fa-headphones"></i>&nbsp; Connected headsets</span><button data-close>×</button></div>
+    <div id="audio-list"></div>
+  </div>
+  <div class="netmenu" id="net-menu" hidden>
+    <div class="net-head" id="net-status">Not connected</div>
+    <div id="net-list"></div>
+  </div>
+  <div id="dimmer" hidden></div>
+  <div class="modal-back" id="reset-modal"><div class="modal">
+    <h3>Reset this session?</h3>
+    <p class="meta">All session telemetry and virtual state will be permanently cleared.</p>
+    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:16px">
+      <button class="btn" id="btn-cancel-reset">Cancel</button>
+      <button class="btn primary" id="btn-confirm-reset">Reset</button>
+    </div>
+  </div></div>
+  <div class="toast" id="toast"></div>
+</div>
+<script src="/js/api.js?v=6"></script><script src="/js/terminal.js?v=7"></script>
+<script>
+(function () {
+  function tick() {
+    const d = new Date();
+    const p = (n) => String(n).padStart(2, '0');
+    const c = document.getElementById('os-clock');
+    const dt = document.getElementById('os-date');
+    if (c) c.textContent = p(d.getHours()) + ':' + p(d.getMinutes());
+    if (dt) dt.textContent = p(d.getMonth() + 1) + '/' + p(d.getDate()) + '/' + String(d.getFullYear()).slice(2);
+  }
+  tick(); setInterval(tick, 10000);
+  // boot splash: black -> glitching logo -> fade into desktop
+  setTimeout(() => {
+    const b = document.getElementById('boot');
+    if (!b) return;
+    b.classList.add('done');
+    setTimeout(() => b.remove(), 800);
+  }, 3100);
+  // locked layout: scale the fixed stage to fit any screen
+  function fitStage() {
+    const st = document.getElementById('stage');
+    if (!st) return;
+    if (window.innerWidth < 1100) { st.style.transform = ''; return; }
+    const s = Math.min(0.80, window.innerWidth / 1560, window.innerHeight / 860);
+    st.style.transform = 'scale(' + s + ')';
+  }
+  window.addEventListener('resize', fitStage);
+  fitStage();
+  // drag terminal window by its titlebar
+  const win = document.getElementById('twin');
+  const bar = document.getElementById('tbar');
+  let sx = 0, sy = 0, ox = 0, oy = 0, drag = false;
+  bar.addEventListener('mousedown', (e) => {
+    if (e.target.closest('button') || e.target.closest('.pill') || win.classList.contains('maxed')) return;
+    drag = true; sx = e.clientX; sy = e.clientY;
+    const r = win.getBoundingClientRect(); ox = r.left; oy = r.top;
+    win.style.left = ox + 'px'; win.style.top = oy + 'px'; win.style.right = 'auto';
+    e.preventDefault();
+  });
+  window.addEventListener('mousemove', (e) => {
+    if (!drag) return;
+    win.style.left = Math.max(0, ox + e.clientX - sx) + 'px';
+    win.style.top = Math.max(0, oy + e.clientY - sy) + 'px';
+  });
+  window.addEventListener('mouseup', () => { drag = false; });
+  function gridEl() { return document.querySelector('.deskrow'); }
+  function hideWin() {
+    const g = gridEl();
+    if (g) g.classList.remove('grid-hidden');
+    if (win.style.display === 'none') return;
+    const done = () => { win.style.display = 'none'; };
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { done(); return; }
+    try {
+      win.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 180, easing: 'ease-in' }).finished.then(done, done);
+    } catch { done(); }
+  }
+  document.getElementById('t-close').addEventListener('click', hideWin);
+  document.getElementById('t-min').addEventListener('click', hideWin);
+  document.getElementById('t-max').addEventListener('click', () => win.classList.toggle('maxed'));
+  let opening = false;
+  async function showWin() {
+    if (opening) return;
+    if (win.style.display === 'flex' || getComputedStyle(win).display === 'flex') {
+      const inp0 = document.getElementById('term-input');
+      if (inp0) inp0.focus();
+      return;
+    }
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      const g1 = gridEl();
+      if (g1) g1.classList.add('grid-hidden');
+      win.style.display = 'flex';
+      const inp0 = document.getElementById('term-input');
+      if (inp0) inp0.focus();
+      return;
+    }
+    opening = true;
+    const g0 = gridEl();
+    if (g0) g0.classList.add('grid-hidden');
+    await new Promise((r) => setTimeout(r, 300));
+    const ov = document.getElementById('topen');
+    const hl = document.getElementById('handL');
+    const hr = document.getElementById('handR');
+    const shot = document.getElementById('tshot');
+    ov.hidden = false;
+    shot.hidden = true;
+    const easeOut = 'cubic-bezier(.16,1,.3,1)';
+    const aL = hl.animate(
+      [{ transform: 'translateX(-70vw)' }, { transform: 'translateX(6vw)' }],
+      { duration: 750, easing: easeOut, fill: 'forwards' });
+    const aR = hr.animate(
+      [{ transform: 'translateX(70vw)' }, { transform: 'translateX(-6vw)' }],
+      { duration: 750, easing: easeOut, fill: 'forwards' });
+    Promise.all([aL.finished, aR.finished]).then(() => {
+      shot.hidden = false;
+      return shot.animate(
+        [{ opacity: 0, transform: 'scale(.92)' },
+         { opacity: 1, transform: 'scale(1)' }],
+        { duration: 220, easing: 'ease-out', fill: 'forwards' }).finished;
+    }).then(() => new Promise((r) => setTimeout(r, 320))).then(() => {
+      ov.hidden = true;
+      win.style.display = 'flex';
+      const tv = win.animate(
+        [{ transform: 'scaleY(0.012) scaleX(0.72)', filter: 'brightness(4)', opacity: 1 },
+         { transform: 'scaleY(0.012) scaleX(1)', filter: 'brightness(4)', offset: .38 },
+         { transform: 'scaleY(1) scaleX(1)', filter: 'brightness(1.25)', offset: .82 },
+         { transform: 'none', filter: 'none' }],
+        { duration: 480, easing: 'ease-out' });
+      return tv.finished;
+    }).then(() => {
+      opening = false;
+      const inp = document.getElementById('term-input');
+      if (inp) inp.focus();
+    }).catch(() => {
+      opening = false;
+      ov.hidden = true;
+      win.style.display = 'flex';
+    });
+  }
+  document.getElementById('dock-term').addEventListener('click', showWin);
+  window.showWin = showWin;
+  document.getElementById('tb-power').addEventListener('click', () => {
+    document.getElementById('reset-modal').classList.add('open');
+  });
+  if (!new URLSearchParams(location.search).get('session')) hideWin();
+  else { const _g = gridEl(); if (_g) _g.classList.add('grid-hidden'); }
+  // music play toggle (decorative)
+  const mp = document.getElementById('m-play');
+  const PLAY = '<path d="M8 5l11 7-11 7z"/>';
+  const PAUSE = '<path d="M7 5h4v14H7zM13 5h4v14h-4z"/>';
+  if (mp) mp.addEventListener('click', () => {
+    const ico = document.getElementById('m-play-ico');
+    const playing = ico.innerHTML.includes('M7 5h4');
+    ico.innerHTML = playing ? PLAY : PAUSE;
+  });
+})();
+</script>
+<script>
+/* OS apps: file manager, settings, headsets, network. FM navigation is
+   silent; OPENING a file runs a real `cat` so honeytokens still fire. */
+(function () {
+  const $ = (id) => document.getElementById(id);
+  const escH = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const sid = () => localStorage.getItem('sentinel_session') || '';
+  document.querySelectorAll('[data-close]').forEach((b) => b.addEventListener('click', () => {
+    const w = b.closest('.appwin,.netmenu'); if (w) w.hidden = true;
+  }));
+  document.querySelectorAll('[data-drag]').forEach((bar) => {
+    const win = bar.closest('.appwin'); if (!win) return;
+    bar.addEventListener('mousedown', (e) => {
+      if (e.target.closest('button')) return;
+      const r = win.getBoundingClientRect();
+      win.style.left = r.left + 'px'; win.style.top = r.top + 'px';
+      win.style.transform = 'none'; win.style.right = 'auto';
+      const ox = e.clientX - r.left, oy = e.clientY - r.top;
+      const mv = (ev) => { win.style.left = (ev.clientX - ox) + 'px'; win.style.top = (ev.clientY - oy) + 'px'; };
+      const up = () => { window.removeEventListener('mousemove', mv); window.removeEventListener('mouseup', up); };
+      window.addEventListener('mousemove', mv); window.addEventListener('mouseup', up);
+      e.preventDefault();
+    });
+  });
+  const openWin = (id) => { const w = $(id); if (w) w.hidden = false; };
+  const rails = document.querySelectorAll('.ticons .ticon');
+  const [bRefresh, bFiles, bSettings, bAudio, bNet, bTerm] = rails;
+  if (bRefresh) bRefresh.addEventListener('click', () => location.reload());
+  if (bFiles) bFiles.addEventListener('click', () => { openWin('fm-win'); fmNav('/'); });
+  if (bSettings) bSettings.addEventListener('click', () => openWin('set-win'));
+  if (bAudio) bAudio.addEventListener('click', () => { renderAudio(); openWin('audio-win'); });
+  if (bNet) bNet.addEventListener('click', () => { const m = $('net-menu'); if (m) m.hidden = !m.hidden; });
+  if (bTerm) bTerm.addEventListener('click', () => { if (typeof window.showWin === 'function') window.showWin(); });
+  document.querySelectorAll('.bcontainer .ticon').forEach((b) => {
+    const t = b.getAttribute('title');
+    if (t === 'Settings') b.addEventListener('click', () => openWin('set-win'));
+    if (t === 'Volume') b.addEventListener('click', () => { renderAudio(); openWin('audio-win'); });
+  });
+  // --- file manager ---
+  let fmPath = '/';
+  async function fmNav(p) {
+    const id = sid(); if (!id) return;
+    let d = null;
+    try {
+      const r = await fetch(`/api/sessions/${id}/browse?path=${encodeURIComponent(p)}`);
+      if (r.ok) d = await r.json();
+    } catch { /* offline */ }
+    if (!d || d.type !== 'dir') { $('fm-status').textContent = 'Cannot open ' + p; return; }
+    fmPath = d.path;
+    $('fm-path').textContent = fmPath;
+    $('fm-grid').innerHTML = d.children.map((c) => `<button class="ff" data-n="${escH(c.name)}" data-t="${c.type}"><i class="fa-${c.type === 'dir' ? 'solid fa-folder' : 'regular fa-file-lines'}"></i><span>${escH(c.name)}</span></button>`).join('') || '<div class="bmeta">empty folder</div>';
+    $('fm-status').textContent = d.children.length + ' item(s)';
+  }
+  $('fm-grid').addEventListener('dblclick', async (e) => {
+    const b = e.target.closest('.ff'); if (!b) return;
+    const full = (fmPath === '/' ? '' : fmPath) + '/' + b.dataset.n;
+    if (b.dataset.t === 'dir') { fmNav(full); return; }
+    const r = await api(`/api/sessions/${sid()}/exec`, { method: 'POST', body: JSON.stringify({ command: 'cat ' + full }) });
+    $('file-title').textContent = b.dataset.n;
+    $('file-content').textContent = r.output || '(empty file)';
+    openWin('file-win');
+  });
+  $('fm-up').addEventListener('click', () => {
+    const parts = fmPath.split('/').filter(Boolean); parts.pop();
+    fmNav('/' + parts.join('/'));
+  });
+  // --- settings ---
+  const dim = $('dimmer');
+  $('set-bright').addEventListener('input', (e) => {
+    dim.hidden = false;
+    dim.style.opacity = ((100 - e.target.value) / 100 * 0.75).toFixed(2);
+  });
+  $('set-vol').addEventListener('input', (e) => { $('set-vol-v').textContent = e.target.value + '%'; });
+  // --- headsets (local device state) ---
+  const devs = [
+    { n: 'Buds Pro', s: 'connected', d: true },
+    { n: 'Studio Headset', s: 'available', d: false },
+    { n: 'Laptop Speakers', s: 'available', d: false },
+  ];
+  function renderAudio() {
+    $('audio-list').innerHTML = devs.map((d, i) => `<div class="arow"><div><b>${escH(d.n)}</b><div class="bmeta">${d.s}${d.d ? ' · default' : ''}</div></div><div>${d.s === 'connected' ? `<button data-a="${i}" data-k="d">Default</button> <button data-a="${i}" data-k="x">Disconnect</button>` : `<button data-a="${i}" data-k="c">Connect</button>`}</div></div>`).join('');
+  }
+  $('audio-list').addEventListener('click', (e) => {
+    const b = e.target.closest('button'); if (!b) return;
+    const d = devs[+b.dataset.a]; if (!d) return;
+    if (b.dataset.k === 'c') d.s = 'connected';
+    if (b.dataset.k === 'x') { d.s = 'available'; d.d = false; }
+    if (b.dataset.k === 'd') { devs.forEach((x) => { x.d = false; }); d.d = true; }
+    renderAudio();
+  });
+  // --- network (local radio state) ---
+  const nets = [{ n: 'Meridian-5G', s: 4 }, { n: 'Meridian-Guest', s: 3 }, { n: 'Lobby-WiFi', s: 2 }];
+  let cur = null;
+  function renderNet() {
+    $('net-status').textContent = cur ? 'Connected to ' + cur : 'Not connected';
+    $('net-list').innerHTML = nets.map((n) => `<div class="arow"><div><span class="sig">${[1, 2, 3, 4].map((l) => `<i style="height:${3 + l * 3}px" class="${l <= n.s ? 'on' : ''}"></i>`).join('')}</span><b>${escH(n.n)}</b></div><button data-n="${escH(n.n)}">${cur === n.n ? 'Disconnect' : 'Connect'}</button></div>`).join('');
+  }
+  $('net-list').addEventListener('click', (e) => {
+    const b = e.target.closest('button'); if (!b) return;
+    cur = cur === b.dataset.n ? null : b.dataset.n;
+    renderNet();
+  });
+  renderNet();
+})();
+</script>
+</body>
+</html>

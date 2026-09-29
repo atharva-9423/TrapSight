@@ -1,0 +1,144 @@
+/* Overview hero + stat cards (reference style) */
+.hero {
+  text-align: center;
+  padding: 14px 0 4px;
+  position: relative;
+}
+
+.hero .eyebrow {
+  margin-bottom: 2px;
+}
+
+.hero-number {
+  font-family: var(--num);
+  font-size: clamp(44px, 5vw, 72px);
+  font-weight: 700;
+  letter-spacing: -.02em;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.hero-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 10px 2px 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.chart-bleed {
+  margin: 0 -40px;
+}
+
+.chart-bleed svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.day-label {
+  font-size: 12px;
+  fill: var(--muted);
+  font-weight: 500;
+}
+
+.bento {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--gap);
+  margin: 0 -40px;
+}
+
+.bento-threat {
+  grid-row: span 2;
+}
+
+.bento-narrow {
+  grid-column: span 2;
+}
+
+.bento-feed {
+  grid-row: span 2;
+}
+
+.bento-recent {
+  grid-column: span 3;
+}
+
+@media (max-width: 1000px) {
+  .bento {
+    grid-template-columns: 1fr;
+    margin: 0 -20px;
+  }
+
+  .bento-threat {
+    grid-row: auto;
+  }
+
+  .bento-narrow {
+    grid-column: auto;
+  }
+
+  .bento-feed {
+    grid-row: auto;
+  }
+
+  .bento-recent {
+    grid-column: auto;
+  }
+}
+
+.gauge-wrap {
+  display: flex;
+  justify-content: center;
+  padding: 2px 0;
+}
+
+.gauge-num {
+  font-family: var(--num);
+  font-size: 52px;
+  font-weight: 700;
+  text-align: center;
+  line-height: 1;
+  margin-top: -87px;
+  font-variant-numeric: tabular-nums;
+}
+
+.gauge-cap {
+  text-align: center;
+  color: var(--muted);
+  font-size: 12.5px;
+  margin-top: 2px;
+}
+
+.card.dark .gauge-num {
+  color: #fff;
+}
+
+.cols {
+  display: grid;
+  grid-template-columns: 1.35fr 1fr;
+  gap: var(--gap);
+}
+
+@media (max-width: 900px) {
+  .cols {
+    grid-template-columns: 1fr;
+  }
+}
+
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: var(--gap);
+  margin: 18px 0;
+}
+
+@media (max-width: 900px) {
+  .metrics {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

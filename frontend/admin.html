@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DECEPTR — Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/global.css?v=19"><link rel="stylesheet" href="/css/responsive.css?v=15">
+<style>
+  .frow{display:grid;gap:10px;margin-bottom:10px}
+  .frow.c2{grid-template-columns:1fr 1fr}.frow.c3{grid-template-columns:1fr 1fr 1fr}.frow.c5{grid-template-columns:2fr 2fr 1.4fr 1.4fr .6fr}
+  .frow input,.frow textarea,.frow select{font:inherit;font-size:13.5px;padding:9px 11px;border:1px solid var(--line);border-radius:8px;background:#fff;width:100%}
+  .frow textarea{min-height:64px;resize:vertical;font-family:var(--mono);font-size:12px}
+  .dynrow{border:1px dashed var(--line);border-radius:10px;padding:10px;margin-bottom:10px}
+  .mini{padding:5px 10px;font-size:12px}
+  #atk-log{background:var(--ink);color:#E9E4F7;border-radius:10px;padding:14px;font-family:var(--mono);font-size:12.5px;max-height:320px;overflow-y:auto;white-space:pre-wrap}
+</style>
+</head>
+<body>
+<div class="layout">
+  <header class="topnav">
+    <a class="logo" href="/index.html"><span class="logo-mark"></span> Deceptr</a>
+    <nav class="tabs">
+      <a href="/real.html">Real System</a>
+      <a href="/index.html">Overview</a>
+      <a href="/intelligence.html">Intelligence</a>
+      <a href="/reports.html">Reports</a>
+      <a href="/system.html">System</a>
+    </nav>
+    <div class="top-actions"><span class="status-pill"><span class="dot"></span> Admin</span></div>
+  </header>
+  <main class="main">
+    <div class="topbar">
+      <div><h1 class="page-title">Administration</h1><p class="page-sub">Edit the Real System reference and drive demo attacks into any session.</p></div>
+      <div style="display:flex;gap:8px"><button class="btn" id="btn-reset-ref">Reset reference</button><button class="btn primary" id="btn-save">Save all</button></div>
+    </div>
+    <div id="save-msg" class="meta"></div>
+    <h2 class="section-title">Company profile</h2>
+    <div class="card"><div class="frow c2">
+      <input id="co-name" placeholder="Company name"><input id="co-domain" placeholder="Domain">
+      <input id="co-host" placeholder="Prod host"><input id="co-db" placeholder="DB host">
+    </div></div>
+    <h2 class="section-title">Credentials <button class="btn mini" id="add-cred">+ Add</button></h2>
+    <div class="card"><div id="cred-rows"></div></div>
+    <h2 class="section-title">Documents <button class="btn mini" id="add-doc">+ Add</button></h2>
+    <div class="card"><div id="doc-rows"></div></div>
+    <h2 class="section-title">Logs <button class="btn mini" id="add-log">+ Add</button></h2>
+    <div class="card"><div id="log-rows"></div></div>
+    <h2 class="section-title">Services <button class="btn mini" id="add-svc">+ Add</button></h2>
+    <div class="card"><div id="svc-rows"></div></div>
+    <h2 class="section-title">Demo attack runner</h2>
+    <div class="card">
+      <div class="frow c3">
+        <input id="atk-sid" placeholder="Session ID (e.g. SES-XXXXXX)">
+        <select id="atk-scn"><option value="credential_hunt">Credential hunt</option><option value="full_progression">Full progression</option><option value="quick_recon">Quick recon</option><option value="custom">Custom commands…</option></select>
+        <div style="display:flex;gap:8px"><button class="btn" id="atk-latest">Latest</button><button class="btn primary" id="atk-run">Run attack</button></div>
+      </div>
+      <div class="frow" id="atk-custom-w" style="display:none"><textarea id="atk-custom" placeholder="One command per line (max 20)"></textarea></div>
+      <p class="meta">Commands execute through the live pipeline — events, deception, transcript and open terminals update in real time. <a id="atk-watch" href="#" target="_blank">Watch session →</a></p>
+      <div id="atk-log">Idle. Pick a session and run an attack.</div>
+    </div>
+  </main>
+</div>
+<div class="toast" id="toast"></div>
+<script src="/js/api.js?v=6"></script>
+<script>
+const $ = (id) => document.getElementById(id);
+const escA = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+function credRow(c = {}) {
+  return `<div class="dynrow"><div class="frow c5">
+    <input data-k="system" placeholder="System" value="${escA(c.system || '')}">
+    <input data-k="location" placeholder="Location" value="${escA(c.location || '')}">
+    <input data-k="username" placeholder="Username" value="${escA(c.username || '')}">
+    <input data-k="password" placeholder="Password" value="${escA(c.password || '')}">
+    <button class="btn danger mini rm">×</button></div>
+    <div class="frow c3"><select data-k="sensitivity">
+      ${['low', 'medium', 'high', 'critical'].map((s) => `<option ${c.sensitivity === s ? 'selected' : ''}>${s}</option>`).join('')}
+    </select></div></div>`;
+}
+function docRow(c = {}, ph = 'preview…') {
+  return `<div class="dynrow"><div class="frow c2">
+    <input data-k="label" placeholder="Label" value="${escA(c.label || '')}">
+    <input data-k="path" placeholder="Path" value="${escA(c.path || '')}"></div>
+    <div class="frow"><textarea data-k="preview" placeholder="${ph}">${escA(c.preview || '')}</textarea></div>
+    <button class="btn danger mini rm">Remove</button></div>`;
+}
+function svcRow(c = {}) {
+  return `<div class="dynrow"><div class="frow c5">
+    <input data-k="name" placeholder="Service" value="${escA(c.name || '')}">
+    <input data-k="host" placeholder="Host" value="${escA(c.host || '')}">
+    <input data-k="port" placeholder="Port" value="${c.port ?? ''}">
+    <button class="btn danger mini rm">×</button></div></div>`;
+}
+function collect(box, keys) {
+  return [...document.querySelectorAll(`#${box} .dynrow`)].map((row) => {
+    const o = {};
+    row.querySelectorAll('[data-k]').forEach((el) => { o[el.dataset.k] = el.value; });
+    if (o.port !== undefined) o.port = o.port === '' ? null : (+o.port || o.port);
+    return o;
+  });
+}
+document.addEventListener('click', (e) => {
+  if (e.target.classList.contains('rm')) e.target.closest('.dynrow').remove();
+});
+$('add-cred').addEventListener('click', () => $('cred-rows').insertAdjacentHTML('beforeend', credRow()));
+$('add-doc').addEventListener('click', () => $('doc-rows').insertAdjacentHTML('beforeend', docRow()));
+$('add-log').addEventListener('click', () => $('log-rows').insertAdjacentHTML('beforeend', docRow()));
+$('add-svc').addEventListener('click', () => $('svc-rows').insertAdjacentHTML('beforeend', svcRow()));
+async function loadRef() {
+  try {
+    const m = await api('/api/real-system');
+    $('co-name').value = m.company.name || ''; $('co-domain').value = m.company.domain || '';
+    $('co-host').value = m.company.prod_host || ''; $('co-db').value = m.company.db_host || '';
+    $('cred-rows').innerHTML = m.credentials.map(credRow).join('');
+    $('doc-rows').innerHTML = m.documents.map((d) => docRow(d)).join('');
+    $('log-rows').innerHTML = m.logs.map((d) => docRow(d)).join('');
+    $('svc-rows').innerHTML = m.services.map(svcRow).join('');
+  } catch { toast('Reference unreachable. Start the backend.'); }
+}
+$('btn-save').addEventListener('click', async () => {
+  const payload = {
+    company: { name: $('co-name').value, domain: $('co-domain').value, prod_host: $('co-host').value, db_host: $('co-db').value },
+    credentials: collect('cred-rows'), documents: collect('doc-rows'),
+    logs: collect('log-rows'), services: collect('svc-rows'),
+  };
+  try {
+    await api('/api/admin/real-system', { method: 'PUT', body: JSON.stringify(payload) });
+    $('save-msg').textContent = 'Saved. Real System tab and decoy validation now use these values.';
+    toast('Reference saved.');
+  } catch (e) { toast(`Save failed: ${e.message}`); }
+});
+$('btn-reset-ref').addEventListener('click', async () => {
+  try { await api('/api/admin/real-system/reset', { method: 'POST' }); await loadRef(); toast('Reference restored to defaults.'); }
+  catch (e) { toast(`Reset failed: ${e.message}`); }
+});
+$('atk-scn').addEventListener('change', () => {
+  $('atk-custom-w').style.display = $('atk-scn').value === 'custom' ? '' : 'none';
+});
+$('atk-latest').addEventListener('click', async () => {
+  try {
+    const d = await api('/api/sessions');
+    const act = (d.sessions || []).filter((s) => s.status === 'active').sort((a, b) => (b.created_at || 0) - (a.created_at || 0));
+    if (act.length) { $('atk-sid').value = act[0].session_id; toast('Latest session selected.'); }
+    else toast('No active sessions — open the terminal first.');
+  } catch (e) { toast(`Lookup failed: ${e.message}`); }
+});
+$('atk-run').addEventListener('click', async () => {
+  const sid = $('atk-sid').value.trim();
+  if (!sid) return toast('Enter a session ID first.');
+  const body = { session_id: sid, scenario: $('atk-scn').value };
+  if (body.scenario === 'custom') {
+    body.commands = $('atk-custom').value.split('\n').map((s) => s.trim()).filter(Boolean);
+    if (!body.commands.length) return toast('Enter at least one command.');
+    delete body.scenario;
+  }
+  $('atk-watch').href = `/terminal.html?session=${encodeURIComponent(sid)}`;
+  $('atk-log').textContent = `Attacking ${sid}… commands stream into the terminal live.`;
+  try {
+    const r = await api('/api/admin/attack', { method: 'POST', body: JSON.stringify(body) });
+    $('atk-log').textContent = r.results.map((x) => `$ ${x.command}\n  → events: ${x.events.join(', ') || '—'}${x.deception.length ? `\n  → deception: ${x.deception.join(', ')}` : ''}`).join('\n') +
+      `\n\nDone: ${r.commands_run} commands · threat ${r.threat} · stages: ${r.progression.join(' → ') || '—'}`;
+  } catch (e) { $('atk-log').textContent = `Failed: ${e.message}`; }
+});
+document.addEventListener('DOMContentLoaded', loadRef);
+</script>
+</body>
+</html>

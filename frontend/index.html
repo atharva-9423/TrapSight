@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DECEPTR — Overview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/global.css?v=20"><link rel="stylesheet" href="/css/dashboard.css?v=20"><link rel="stylesheet" href="/css/responsive.css?v=20">
+</head>
+<body>
+<div class="layout">
+  <header class="topnav">
+    <a class="logo" href="/index.html"><span class="logo-mark"></span> Deceptr</a>
+    <nav class="tabs">
+      <a href="/real.html">Real System</a>
+      <a class="active" href="/index.html">Overview</a>
+      <a href="/intelligence.html">Intelligence</a>
+      <a href="/reports.html">Reports</a>
+      <a href="/system.html">System</a>
+    </nav>
+    <div class="top-actions"><span class="status-pill"><span class="dot"></span> Protected</span></div>
+  </header>
+  <main class="main">
+    <div id="conn-banner" class="hint" style="display:none"></div>
+    <div class="hero">
+      <div class="eyebrow">Observed events</div>
+      <div class="hero-number" id="hero-num">0</div>
+      <div class="hero-meta">
+        <div class="legend"><span><i style="background:#141419"></i>Events</span><span><i style="background:#8B7CF6"></i>Honeytokens</span></div>
+        <div class="legend"><span id="hero-threat"></span><span id="hero-range"></span></div>
+      </div>
+    </div>
+    <div class="chart-bleed"><div id="chart"></div></div>
+    <div class="bento">
+      <div class="card dark bento-threat">
+        <h3>Threat overview</h3>
+        <div class="gauge-wrap"><div id="gauge"></div></div>
+        <div class="gauge-num" id="gauge-num">0</div>
+        <div class="gauge-cap">total events</div>
+        <div class="stat-cols center" id="threat-cols" style="margin-top:14px"></div>
+        <div style="display:flex;gap:10px;margin-top:16px">
+          <a class="btn primary" style="flex:1;background:#fff;color:#101014;border-color:#fff" href="/intelligence.html">View intelligence</a>
+          <a class="btn primary" style="flex:1" href="/reports.html">Report</a>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Detections</h3>
+        <div class="metric" id="detect-big">0%</div>
+        <p class="meta">high-severity share of all events</p>
+        <div class="barcode"><i id="detect-bar" style="width:0%"></i></div>
+        <div class="stat-cols" id="detect-cols"></div>
+      </div>
+      <div class="card">
+        <h3>Sessions</h3>
+        <div class="metric" id="sess-big">0</div>
+        <p class="meta">active isolated environments</p>
+        <div class="barcode"><i id="sess-bar" style="width:0%"></i></div>
+        <div class="stat-cols" id="sess-cols"></div>
+        <div id="sessions" style="margin-top:8px"></div>
+      </div>
+      <div class="card">
+        <h3>Honeytokens</h3>
+        <div class="metric" id="honey-big">0</div>
+        <p class="meta">decoy credentials touched</p>
+        <div class="barcode"><i id="honey-bar" style="width:0%"></i></div>
+        <div class="stat-cols" id="honey-cols"></div>
+      </div>
+      <div class="card bento-narrow"><h3>Attack progression</h3><p class="meta">Stages light up only with observed evidence.</p><div id="progression"></div></div>
+      <div class="card dark bento-feed"><h3>Live attack feed</h3><p class="meta">Every command typed in the honeypot terminal, with what it triggered.</p><div id="attack-feed"></div></div>
+      <div class="card bento-recent"><h3>Recent security events</h3><p class="meta">Behavioral detections across all sessions.</p><div id="recent"></div></div>
+    </div>
+  </main>
+</div>
+<div class="toast" id="toast"></div>
+<script src="/js/api.js?v=5"></script><script src="/js/dashboard.js?v=19"></script>
+</body>
+</html>
